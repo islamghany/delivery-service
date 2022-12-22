@@ -20,5 +20,7 @@ async function login(
 
 export const useLogin = () =>
   useMutation({
-    // mutationFn:(email:string,password:string,path:"biker"|"sender")=>login(email,password,path),
+    mutationFn: ({ email, password, path }: any) =>
+      api.post<string>("/" + path + "/login", { email, password }),
+    //m mutationFn:(email:string,password:string,path:"biker"|"sender")=>login(email,password,path),
   });

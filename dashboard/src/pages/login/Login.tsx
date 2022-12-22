@@ -4,6 +4,7 @@ import Container from "@/components/Container";
 import { Input } from "@/components/Form";
 import { Title } from "@/components/Typeo";
 import { validateEmail, validatePassword } from "@/helpers/validation";
+import { useLogin } from "@/hooks";
 import { useForm } from "react-hook-form";
 
 interface AuthenticateUser {
@@ -16,13 +17,12 @@ export function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<AuthenticateUser>();
-
+  const { mutate, isLoading, error, isError } = useLogin();
   const onSubmit = handleSubmit(async (e) => {
-    // const { data } = await exec(e);
-    // if (data) {
-    //   dispatch(setUser(data));
-    // }
+    const data = await mutate({ ...e, path: "sender" });
+    console.log(data);
   });
+  console.log(error);
   return (
     <Container className="">
       <Title as="h1" className="mt-10  flex  justify-center">
@@ -30,13 +30,11 @@ export function Login() {
       </Title>
 
       <div className="flex justify-center py-12 sm:px-6 lg:px-8">
-        {/* <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-      {isError && error && (
-        <Alert title="Error" type="error">
-          {"nfbfh"}
-        </Alert>
-      )}
-      </div> */}
+        {/* {isError && error ? (
+          <Alert title="Error" type="error">
+            {error as string}
+          </Alert>
+        ) : null} */}
         <form onSubmit={onSubmit} className="space-y-6 w-full max-w-md">
           <Input
             label="Email address"
@@ -55,8 +53,8 @@ export function Login() {
             type="password"
             register={register("password", {
               required: true,
-              minLength: 8,
-              maxLength: 72,
+              minLength: 4,
+              maxLength: 50,
             })}
             required
             error={validatePassword(errors)}
@@ -64,7 +62,7 @@ export function Login() {
 
           <Button
             type="submit"
-            loading={false}
+            loading={isLoading}
             className="flex w-full justify-center"
           >
             Submit

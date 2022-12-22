@@ -1,7 +1,7 @@
 import { MOVIES_BASE_URL } from "@/constants";
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
 const axiosInstance = axios.create({
-  baseURL: "localhost:8080",
+  baseURL: "http://localhost:8080",
 });
 
 export const api = (axios: AxiosInstance) => {

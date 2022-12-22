@@ -6,6 +6,7 @@ import {
 } from "./helpers/errors";
 import express, { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
+import cors from "cors";
 import router from "./api/routes";
 // import { asyncWrapper } from "./helpers/asyncWrapper";
 import swaggerUi from "swagger-ui-express";
@@ -20,6 +21,7 @@ const swaggerData = fs.readFileSync(
 );
 
 const swaggerDocument = JSON.parse(swaggerData);
+app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(express.json());
