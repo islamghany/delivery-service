@@ -18,10 +18,6 @@ export class Biker {
   })
   email: string;
 
-  @Column({
-    type: "citext",
-    nullable: false,
-  })
   @Column()
   password: string;
 

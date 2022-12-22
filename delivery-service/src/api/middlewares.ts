@@ -3,6 +3,7 @@ import { verifyToken } from "./../helpers/token";
 import { NextFunction, Response } from "express";
 import {
   authenticationRequiredResponse,
+  invalidTokenResponse,
   serverErrorResponse,
 } from "../helpers/errors";
 import { bikerRepository, senderRepository } from "../db";
@@ -18,13 +19,10 @@ export const checkAuth = (req: IRequest, res: Response, next: NextFunction) => {
   try {
     decodedToken = verifyToken(token);
   } catch (err: any) {
-    return next(serverErrorResponse(err));
+    return next(invalidTokenResponse());
   }
 
-  req.auth = {
-    email: decodedToken?.email as string,
-    id: decodedToken?.id as number,
-  };
+  req.user_id = decodedToken?.id;
 
   return next();
 };
@@ -32,11 +30,11 @@ export const checkAuth = (req: IRequest, res: Response, next: NextFunction) => {
 export const protectedRoute =
   (role: "BIKER" | "SENDER") =>
   async (req: IRequest, res: Response, next: NextFunction) => {
-    if (role === "BIKER" && req.auth?.id) {
+    if (role === "BIKER" && req.user_id) {
       try {
         const biker = await bikerRepository.findOne({
           where: {
-            id: req.auth.id,
+            id: req.user_id,
           },
         });
 
@@ -44,23 +42,24 @@ export const protectedRoute =
           return next(authenticationRequiredResponse());
         }
 
+        req.biker = biker;
         return next();
       } catch (err: any) {
         return next(serverErrorResponse(err));
       }
     }
-    if (role === "SENDER" && req.auth?.id) {
+    if (role === "SENDER" && req.user_id) {
       try {
-        const biker = await senderRepository.findOne({
+        const sender = await senderRepository.findOne({
           where: {
-            id: req.auth.id,
+            id: req.user_id,
           },
         });
 
-        if (!biker) {
+        if (!sender) {
           return next(authenticationRequiredResponse());
         }
-
+        req.sender = sender;
         return next();
       } catch (err: any) {
         return next(serverErrorResponse(err));

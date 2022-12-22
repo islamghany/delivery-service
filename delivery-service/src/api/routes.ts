@@ -1,29 +1,55 @@
+import { bikerLogin, claimOrder, deliverOrder } from "./bikers";
 import { Router } from "express";
 import { checkAuth, protectedRoute } from "./middlewares";
 import {
   addOrder,
-  claimOrder,
-  deliverOrder,
-  getAvailableOrders,
+  getIdleOrders,
   getSenderOrders,
+  getToDoOrdersForBiker,
 } from "./orders";
 import { senderLogin } from "./senders";
 
 const router = Router();
 
-router.post("/login/sender", senderLogin);
+router.post("/sender/login", senderLogin);
 
-router.post("/login/biker", () => {});
+router.post("/biker/login", bikerLogin);
+
+router.post("/orders", checkAuth, protectedRoute("SENDER"), addOrder);
 
 router.get(
-  "/sender/:id/orders",
+  "/orders/sender",
   checkAuth,
   protectedRoute("SENDER"),
   getSenderOrders
 );
-router.post("/orders", addOrder);
-router.get("/orders/available", getAvailableOrders);
-router.patch("/orders/claim", claimOrder);
-router.patch("/orders/deliver", deliverOrder);
+
+router.get(
+  "/orders/biker/in-process",
+  checkAuth,
+  protectedRoute("BIKER"),
+  getToDoOrdersForBiker
+);
+
+router.get(
+  "/orders/biker/idle",
+  checkAuth,
+  protectedRoute("BIKER"),
+  getIdleOrders
+);
+
+router.patch(
+  "/orders/:id/claim",
+  checkAuth,
+  protectedRoute("BIKER"),
+  claimOrder
+);
+
+router.patch(
+  "/orders/:id/deliver",
+  checkAuth,
+  protectedRoute("BIKER"),
+  deliverOrder
+);
 
 export default router;

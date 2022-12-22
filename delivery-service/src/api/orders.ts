@@ -1,56 +1,125 @@
-import { Request, Response } from "express";
+import { serverErrorResponse } from "./../helpers/errors";
+import { ordersRepository } from "../db";
+import { Order } from "../db/entity/Orders";
+import {
+  authenticationRequiredResponse,
+  badRequestResponse,
+} from "../helpers/errors";
+import { IRequest, OrderStatus } from "../types";
+import { NextFunction, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import { AddOrderDto } from "../types/schema";
+import { validate } from "class-validator";
+import { plainToClass } from "class-transformer";
+import { InsertResult } from "typeorm";
 
-export const getSenderOrders = (req: Request, res: Response) => {
-  const id = req.params.id;
+export const getSenderOrders = async (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.sender?.id) {
+    return next(authenticationRequiredResponse());
+  }
 
-  // 1) check if the sender alread exsit
+  // 2) get all the order for the sender
+  let orders: Order[];
+  try {
+    orders = await ordersRepository.find({
+      where: {
+        sender: {
+          id: req.sender.id,
+        },
+      },
+    });
+  } catch (err: any) {
+    return next(serverErrorResponse(err));
+  }
 
-  // 2) finds all order associated with the sender and return
-
-  return res.status(StatusCodes.OK).json([]);
+  return res.status(StatusCodes.OK).json(orders);
 };
 
-export const addOrder = (req: Request, res: Response) => {
-  const { senderID } = req.body;
+export const addOrder = async (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.sender?.id) {
+    return next(authenticationRequiredResponse());
+  }
 
-  // 1) check if the sender alread exsit
+  // 1) validate the input
+  const input = plainToClass(AddOrderDto, req.body);
 
-  // 2) finds all order associated with the sender and return
+  try {
+    const errors = await validate(input);
+    if (errors.length >= 1) {
+      return next(badRequestResponse());
+    }
+  } catch (err: any) {
+    return next(serverErrorResponse(err));
+  }
 
-  return res.status(StatusCodes.OK).json([]);
+  // 2) insert the order
+
+  let insertedOrder: InsertResult;
+  try {
+    insertedOrder = await ordersRepository.insert({
+      sender: req.sender,
+      ...input,
+    });
+  } catch (err: any) {
+    return next(serverErrorResponse(err));
+  }
+
+  return res.status(StatusCodes.CREATED).json(insertedOrder.raw[0]);
 };
 
-export const getAvailableOrders = (req: Request, res: Response) => {
+export const getIdleOrders = async (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.biker?.id) {
+    return next(authenticationRequiredResponse());
+  }
   // 1)  find the available orders
 
-  // 2) finds all order associated with the sender and return
+  let orders: Order[];
+  try {
+    orders = await ordersRepository.find({
+      where: {
+        status: OrderStatus.IDLE,
+      },
+    });
+  } catch (err: any) {
+    return next(serverErrorResponse(err));
+  }
 
-  return res.status(StatusCodes.OK).json([]);
+  return res.status(StatusCodes.OK).json(orders);
 };
 
-export const claimOrder = (req: Request, res: Response) => {
-  const { bikerID, orderID } = req.body;
+export const getToDoOrdersForBiker = async (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.biker?.id) {
+    return next(authenticationRequiredResponse());
+  }
+  // 1)  find the in-process orders for that  biker
 
-  // check if both exists
+  let orders: Order[];
+  try {
+    orders = await ordersRepository.find({
+      where: {
+        status: OrderStatus.IN_PROCESS,
+        biker: req.biker,
+      },
+    });
+  } catch (err: any) {
+    return next(serverErrorResponse(err));
+  }
 
-  // 1) check if check if the order is still available
-
-  // 2) if yes make it in process and give it the initali pickof time.
-
-  return res.status(StatusCodes.OK).json({
-    message: "Successful Operation",
-  });
-};
-
-export const deliverOrder = (req: Request, res: Response) => {
-  const { bikerID, orderID, delivery_at } = req.body;
-
-  // check if both exists
-
-  // 1) change the the status for the order and make it deliverd
-
-  return res.status(StatusCodes.OK).json({
-    message: "Successful Operation",
-  });
+  return res.status(StatusCodes.OK).json(orders);
 };

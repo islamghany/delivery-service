@@ -5,6 +5,7 @@ interface TokenPayload {
   email: string;
 }
 const privateKey = process.env?.PRIVATE_KEY as string;
+
 export const generateToken = (payload: TokenPayload) => {
   try {
     const token = jwt.sign(payload, privateKey, {

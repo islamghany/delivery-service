@@ -1,5 +1,5 @@
 export enum OrderStatus {
-  IN_PROCESS,
-  DELIVERED,
-  IDLE,
+  IN_PROCESS = "in_process",
+  DELIVERED = "delivered",
+  IDLE = "idle",
 }

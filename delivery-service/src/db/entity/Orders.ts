@@ -18,6 +18,12 @@ export class Order {
     nullable: false,
     type: "text",
   })
+  title: string;
+
+  @Column({
+    nullable: false,
+    type: "text",
+  })
   pick_up_address: string;
 
   @Column({
@@ -50,11 +56,13 @@ export class Order {
 
   @Column({
     type: "timestamp",
+    nullable: true,
   })
   picked_up_at: Date;
 
   @Column({
     type: "timestamp",
+    nullable: true,
   })
   delivered_at: Date;
 }
