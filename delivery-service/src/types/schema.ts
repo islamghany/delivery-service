@@ -37,5 +37,5 @@ export class DeliverOrderDto {
   @IsNotEmpty()
   @Transform(({ value }) => new Date(value), { toClassOnly: true })
   @IsDate()
-  delivery_at: Date;
+  delivered_at: Date;
 }

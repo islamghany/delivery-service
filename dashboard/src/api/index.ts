@@ -1,7 +1,14 @@
-import { MOVIES_BASE_URL } from "@/constants";
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
+import { BASE_URL } from "@/constants";
+import { BikersApi, OrdersApi, SendersApi } from "@/types";
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+
+const getToken = () => {
+  return localStorage.getItem("token");
+};
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
+  headers: {
+    Authorization: getToken() ? "Bearer " + getToken() : undefined,
+  },
 });
 
 export const api = (axios: AxiosInstance) => {
@@ -14,4 +21,11 @@ export const api = (axios: AxiosInstance) => {
       axios.patch<T>(url, body, config),
   };
 };
-export default api(axiosInstance);
+
+const apis = {
+  ordersAPI: new OrdersApi(undefined, BASE_URL, axiosInstance),
+  bikersAPI: new BikersApi(undefined, BASE_URL, axiosInstance),
+  sendersAPI: new SendersApi(undefined, BASE_URL, axiosInstance),
+};
+
+export default apis;

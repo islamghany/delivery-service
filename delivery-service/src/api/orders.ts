@@ -36,7 +36,7 @@ export const getSenderOrders = async (
     return next(serverErrorResponse(err));
   }
 
-  return res.status(StatusCodes.OK).json(orders);
+  return res.status(StatusCodes.OK).json(orders.reverse());
 };
 
 export const addOrder = async (
@@ -96,7 +96,7 @@ export const getIdleOrders = async (
     return next(serverErrorResponse(err));
   }
 
-  return res.status(StatusCodes.OK).json(orders);
+  return res.status(StatusCodes.OK).json(orders.reverse());
 };
 
 export const getToDoOrdersForBiker = async (
@@ -121,5 +121,5 @@ export const getToDoOrdersForBiker = async (
     return next(serverErrorResponse(err));
   }
 
-  return res.status(StatusCodes.OK).json(orders);
+  return res.status(StatusCodes.OK).json(orders.reverse());
 };

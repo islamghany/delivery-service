@@ -40,9 +40,7 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
   if (err.code === StatusCodes.INTERNAL_SERVER_ERROR) console.log(err);
 
   res.status(err.code).json({
-    success: false,
     message: err.message,
-    stack: err.stack,
   });
 });
 

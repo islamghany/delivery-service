@@ -1,3 +1,4 @@
+import { IRequest } from "./../types/index";
 import { senderRepository } from "../db";
 import {
   invalidCredentialsResponse,
@@ -9,6 +10,7 @@ import { Sender } from "../db/entity/Sender";
 import { generateToken } from "../helpers/token";
 import { validate, IsEmail, IsNotEmpty } from "class-validator";
 import { plainToClass } from "class-transformer";
+import { UserRoles } from "../types/enums";
 
 export class LoginInput {
   @IsEmail()
@@ -44,6 +46,7 @@ export const senderLogin = async (
       token: generateToken({
         id: sender.id,
         email: sender.email,
+        role: UserRoles.SENDER,
       }),
 
       user: {
@@ -51,8 +54,17 @@ export const senderLogin = async (
         email: sender.email,
         name: sender.name,
       },
+      type: "sender",
     });
   } catch (err: any) {
     return next(serverErrorResponse(err));
+  }
+};
+
+export const getAuth = async (req: IRequest, res: Response) => {
+  if (req.role === UserRoles.BIKER) {
+    return res.status(200).json({ user: req.biker, type: UserRoles.BIKER });
+  } else {
+    return res.status(200).json({ user: req.sender, type: UserRoles.SENDER });
   }
 };

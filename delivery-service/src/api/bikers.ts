@@ -19,6 +19,7 @@ import {
   serverErrorResponse,
 } from "./../helpers/errors";
 import { Order } from "../db/entity/Orders";
+import { UserRoles } from "../types/enums";
 export const bikerLogin = async (
   req: Request,
   res: Response,
@@ -42,6 +43,7 @@ export const bikerLogin = async (
       token: generateToken({
         id: biker.id,
         email: biker.email,
+        role: UserRoles.BIKER,
       }),
 
       user: {
@@ -49,6 +51,7 @@ export const bikerLogin = async (
         email: biker.email,
         name: biker.name,
       },
+      type: "biker",
     });
   } catch (err: any) {
     return next(serverErrorResponse(err));
@@ -154,7 +157,7 @@ export const deliverOrder = async (
     }
     // check if the delivery_time in the past
 
-    if (new Date() < input.delivery_at) {
+    if (new Date() < input.delivered_at) {
       next(
         failedValidationResponse("invalid delivery time must be in the past")
       );
@@ -189,16 +192,16 @@ export const deliverOrder = async (
     );
   }
   // delivery_date must be after that picked up time.
-  if (input.delivery_at < order.picked_up_at) {
+  if (input.delivered_at < order.picked_up_at) {
     return next(
-      failedValidationResponse("delivery_at must be after picked-up date")
+      failedValidationResponse("delivered_at must be after picked-up date")
     );
   }
   // 3) change the the status for the order and make it deliverd
   try {
     const updatedOrder = await ordersRepository.update(order.id, {
       status: OrderStatus.DELIVERED,
-      delivered_at: input.delivery_at,
+      delivered_at: input.delivered_at,
     });
     if (!updatedOrder.affected) {
       return next(serverErrorResponse(new Error("No row affected")));

@@ -1,5 +1,6 @@
+import { IRequest } from "./../types/index";
 import { bikerLogin, claimOrder, deliverOrder } from "./bikers";
-import { Router } from "express";
+import { NextFunction, Response, Router } from "express";
 import { checkAuth, protectedRoute } from "./middlewares";
 import {
   addOrder,
@@ -7,49 +8,39 @@ import {
   getSenderOrders,
   getToDoOrdersForBiker,
 } from "./orders";
-import { senderLogin } from "./senders";
+import { senderLogin, getAuth } from "./senders";
+import { UserRoles } from "../types/enums";
+import { authenticationRequiredResponse } from "../helpers/errors";
 
 const router = Router();
+
+router.post("/auth", checkAuth, protectedRoute, getAuth);
 
 router.post("/sender/login", senderLogin);
 
 router.post("/biker/login", bikerLogin);
 
-router.post("/orders", checkAuth, protectedRoute("SENDER"), addOrder);
+//done
+router.post("/orders", checkAuth, protectedRoute, addOrder);
 
-router.get(
-  "/orders/sender",
-  checkAuth,
-  protectedRoute("SENDER"),
-  getSenderOrders
-);
+// doen
+router.get("/orders/sender", checkAuth, protectedRoute, getSenderOrders);
 
+//done
 router.get(
   "/orders/biker/in-process",
   checkAuth,
-  protectedRoute("BIKER"),
+  protectedRoute,
   getToDoOrdersForBiker
 );
 
-router.get(
-  "/orders/biker/idle",
-  checkAuth,
-  protectedRoute("BIKER"),
-  getIdleOrders
-);
+// done
+router.get("/orders/biker/idle", checkAuth, protectedRoute, getIdleOrders);
 
-router.patch(
-  "/orders/:id/claim",
-  checkAuth,
-  protectedRoute("BIKER"),
-  claimOrder
-);
+//done
+router.patch("/orders/:id/claim", checkAuth, protectedRoute, claimOrder);
 
-router.patch(
-  "/orders/:id/deliver",
-  checkAuth,
-  protectedRoute("BIKER"),
-  deliverOrder
-);
+//done
+router.patch("/orders/:id/deliver", checkAuth, protectedRoute, deliverOrder);
 
 export default router;

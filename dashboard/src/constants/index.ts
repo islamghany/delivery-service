@@ -1,1 +1,1 @@
-export { MOVIES_BASE_URL } from "./movies.constants";
+export const BASE_URL = "http://localhost:8080";

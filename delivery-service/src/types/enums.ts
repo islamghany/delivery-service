@@ -3,3 +3,8 @@ export enum OrderStatus {
   DELIVERED = "delivered",
   IDLE = "idle",
 }
+
+export enum UserRoles {
+  SENDER = "SENDER",
+  BIKER = "BIKER",
+}
