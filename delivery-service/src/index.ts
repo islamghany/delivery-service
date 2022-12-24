@@ -12,11 +12,11 @@ import router from "./api/routes";
 import swaggerUi from "swagger-ui-express";
 import fs from "fs";
 import path from "path";
-import AppDataSource from "./db";
+import { AppDataSource } from "./db";
 const app = express();
 
 const swaggerData = fs.readFileSync(
-  path.join(__dirname, "swagger.json"),
+  path.join(__dirname, "../swagger.json"),
   "utf8"
 );
 
@@ -46,10 +46,12 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
 
 AppDataSource.initialize()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(
-        `⚡️[server]: Server is running at https://localhost:${PORT}`
-      );
+    AppDataSource.runMigrations().then(() => {
+      app.listen(PORT, () => {
+        console.log(
+          `⚡️[server]: Server is running at https://localhost:${PORT}`
+        );
+      });
     });
   })
   .catch((err) => console.error(err));

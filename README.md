@@ -2,15 +2,35 @@
 
 A private delivery service company in Cologne handles the collection and delivery of parcels for people.
 
+## Instlation
+
+first clone the project then go to the folder of the repo.
+
+then go to the project folder;
+
+```bash
+cd project
+```
+
+then build the docker compose file
+
+```bash
+docker compose up --build
+```
+
+now to test things up go to the [API Docs]("localhost:8080/api-docs")
+
+and go to the [Dashboard](http://localhost:5173/login)
+
 ## features.
 
 ### 1. A sender is able create a orders to be delivered by specifying pick-up and drop-off address.
 
-![add orders](./project/4.png)
+![add orders](./statics/4.png)
 
 ### 2. A sender is able to see the status of his orders.
 
-![orders](./project/2.png)
+![orders](./statics/2.png)
 
 ### 3. A bikeris able to see a list of the orders.
 
@@ -22,8 +42,8 @@ A private delivery service company in Cologne handles the collection and deliver
 
 ### 7. The status of the order should be updated for the sender.
 
-![orders](./project/3.png)
+![orders](./statics/3.png)
 
-![orders](./project/5.png)
+![orders](./statics/5.png)
 
-![orders](./project/1.png)
+![orders](./statics/1.png)

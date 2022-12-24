@@ -4,15 +4,19 @@ import { Biker } from "./entity/Bikers";
 import { Order } from "./entity/Orders";
 import { Sender } from "./entity/Sender";
 
+// postgresql://root:secret@localhost:5431/delivery?sslmode=disable
+
 const AppDataSource = new DataSource({
+  migrationsTableName: "migrations",
   type: "postgres",
-  host: "localhost",
-  port: 5431,
+  host: "postgres",
+  port: 5432,
   username: "root",
-  password: "secret",
+  password: "islamghany",
   database: "delivery",
   entities: [Sender, Order, Biker],
-  synchronize: true, // remove on production
+  migrations: ["./migrations/**/*{.ts,.js}"],
+  synchronize: true,
   logging: false,
 });
 
@@ -20,4 +24,4 @@ export const senderRepository = AppDataSource.getRepository(Sender);
 export const bikerRepository = AppDataSource.getRepository(Biker);
 export const ordersRepository = AppDataSource.getRepository(Order);
 
-export default AppDataSource;
+export { AppDataSource };

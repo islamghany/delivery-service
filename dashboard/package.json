@@ -6,13 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
+    "preview": "npm run build && vite preview",
     "generate-types": "openapi-generator-cli generate -i ./docs/swagger.json -g  typescript-axios -o ./src/types"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
-    "@islamghany/simple-button": "^0.1.1",
     "axios": "^1.2.1",
     "clsx": "^1.2.1",
     "react": "^18.2.0",

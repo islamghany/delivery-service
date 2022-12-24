@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "tsc --project ./"
+    "start": "tsc --project ./ && node dist/index.js",
+    "migration:up": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run -d src/db/index.ts"
   },
   "keywords": [],
   "author": "",
