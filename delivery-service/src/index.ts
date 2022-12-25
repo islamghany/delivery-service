@@ -13,6 +13,7 @@ import swaggerUi from "swagger-ui-express";
 import fs from "fs";
 import path from "path";
 import { AppDataSource } from "./db";
+import { config } from "./config";
 const app = express();
 
 const swaggerData = fs.readFileSync(
@@ -26,7 +27,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(express.json());
 
-const PORT = process.env.PORT || 8080;
+const PORT = config.PORT;
 
 app.use(router);
 

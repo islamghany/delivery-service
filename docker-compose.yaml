@@ -11,16 +11,16 @@ services:
       networks:
         default:
       volumes:
-        - ./db-data/postgres/:/var/lib/postgres/data
+        - ./data/db-data/postgres/:/var/lib/postgres/data
 
   delivery-service:
     build:
-        context: ../delivery-service
+        context: ./delivery-service
         dockerfile: Dockerfile
     depends_on:
       - postgres
     environment:
-      - PRIVATE_KEY="*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w!"
+      - PRIVATE_KEY="*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9yB&E)H@McQfTjWnZr4u7w!"
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=islamghany
       - POSTGRES_DB=delivery
@@ -34,14 +34,15 @@ services:
         - "8080:8080"
 
   dashboard:
-    restart: unless-stopped
     build:
-        context: ../dashboard
+        context: ./dashboard
         dockerfile: Dockerfile
+    command: npm run dev    
     ports:
-        - "3000:3000" 
+        - "5173:5173" 
+    networks:
+        default:    
     volumes:
-      - /app/node_modules
-      - ../dashboard:/app     
+      - /app/node_modules         
 networks:
   default:

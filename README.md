@@ -6,21 +6,40 @@ A private delivery service company in Cologne handles the collection and deliver
 
 first clone the project then go to the folder of the repo.
 
-then go to the project folder;
-
-```bash
-cd project
-```
-
 then build the docker compose file
 
 ```bash
 docker compose up --build
 ```
 
-now to test things up go to the [API Docs]("localhost:8080/api-docs")
+now to test things up go to the [API Docs](http://localhost:8080/api-docs)
 
-and go to the [Dashboard](http://localhost:5173/login)
+and go to the [Dashboard](http://localhost:5173/login) of the frontend
+
+you can loginin with different account from the blew.
+
+- email:password
+
+### As a Biker
+
+- mohamed@gmail.com:mohamed
+- ahmed@gmail.com:ahmed
+- islam@gmail.com:islam
+- mona@gmail.com:mona
+- ziad@gmail.com:ziad
+- noha@gmail.com:noha
+- mostafa@gmail.com:mostafa
+- tarek@gmail.com:tarek
+- koko@gmail.com:koko
+- yasser@gmail.com:yasser
+
+### As a Sender
+
+- salma@gmail.com:salma
+- gamal@gmail.com:gamal
+- islam@gmail.com:islam
+- mona@gmail.com:mona
+- ziad@gmail.com:ziad
 
 ## features.
 

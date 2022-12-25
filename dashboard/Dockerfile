@@ -1,14 +1,16 @@
 FROM node:19.2-alpine
 
-WORKDIR /app
+WORKDIR  /app
 
-COPY package.json ./
+COPY package.json .
 
-
-RUN npm i
+RUN npm install
 
 COPY . .
 
 EXPOSE 5173
 
+
 CMD ["npm", "run", "dev"]
+
+
